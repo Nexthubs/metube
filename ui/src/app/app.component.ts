@@ -61,7 +61,7 @@ export class AppComponent implements AfterViewInit {
   faExternalLinkAlt = faExternalLinkAlt;
 
   constructor(public downloads: DownloadsService, private cookieService: CookieService, private http: HttpClient) {
-    this.format = cookieService.get('metube_format') || 'any';
+    this.format = cookieService.get('metube_format') || 'mp4';
     // Needs to be set or qualities won't automatically be set
     this.setQualities()
     this.quality = cookieService.get('metube_quality') || 'best';
