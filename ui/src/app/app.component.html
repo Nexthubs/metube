@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">MeTube</a>
+    <a class="navbar-brand" href="#">Youtube下载器</a>
     <!--
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsDefault" aria-controls="navbarsDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -81,59 +81,6 @@
               <span class="spinner-border spinner-border-sm" role="status" id="add-spinner" *ngIf="addInProgress"></span>
               {{ addInProgress ? "Adding..." : "Add" }}
             </button>
-            <button class="btn btn-primary dropdown-toggle dropdown-toggle-split" id="advancedButton" type="button" title="Advanced options" [disabled]="addInProgress || downloads.loading" ngbDropdownAnchor (click)="advancedDropdown.open()" *ngIf="showAdvanced()">
-              <span class="sr-only">Advanced options</span>
-            </button>
-            <div ngbDropdownMenu aria-labelledby="advancedButton" class="dropdown-menu dropdown-menu-end folder-dropdown-menu">
-              <div class="container">
-                <div class="input-group add-url-component">
-                  <span class="input-group-text">Download Folder</span>
-                  <ng-select [items]="customDirs$ | async" placeholder="Default" [addTag]="allowCustomDir.bind(this)" addTagText="Create directory" [ngStyle]="{'flex-grow':'1'}" bindLabel="folder" [(ngModel)]="folder" [disabled]="addInProgress || downloads.loading"></ng-select>
-                </div>
-                <div class="input-group add-url-component">
-                  <span class="input-group-text">Custom Name Prefix</span>
-                  <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="Default" name="customNamePrefix" [(ngModel)]="customNamePrefix" [disabled]="addInProgress || downloads.loading">
-                </div>
-                <div class="add-url-component">
-                  <div class="row align-items-center gy-2">
-                    <div class="col-12 col-md-6 order-md-2">
-                      <div class="input-group">
-                        <span class="input-group-text">Items limit</span>
-                        <input type="number" min="0" autocomplete="off" class="form-control" placeholder="Default" name="playlistItemLimit" (keydown)="isNumber($event)" [(ngModel)]="playlistItemLimit" [disabled]="addInProgress || downloads.loading">
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-6 order-md-1">
-                      <div class="input-group ms-1">
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="playlistStrictMode" [(ngModel)]="playlistStrictMode" [disabled]="addInProgress || downloads.loading">
-                          <label class="form-check-label">Strict Playlist mode</label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="btn-group ms-2" ngbDropdown>
-            <button type="button" class="btn btn-secondary" (click)="openBatchImportModal()">
-              Import
-            </button>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" ngbDropdownToggle>
-              <span class="visually-hidden">Toggle Dropdown</span>
-            </button>
-            <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end">
-              <li>
-                <button class="dropdown-item" (click)="exportBatchUrls('all')">
-                  Export All URLs
-                </button>
-              </li>
-              <li>
-                <button class="dropdown-item" (click)="copyBatchUrls('all')">
-                  Copy All URLs
-                </button>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
