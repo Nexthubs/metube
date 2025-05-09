@@ -46,13 +46,13 @@
     <div class="container add-url-box">
       <div class="row">
         <div class="col add-url-component input-group">
-          <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="Video or playlist URL" name="addUrl" [(ngModel)]="addUrl" [disabled]="addInProgress || downloads.loading">
+          <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="输入视频网页链接" name="addUrl" [(ngModel)]="addUrl" [disabled]="addInProgress || downloads.loading">
         </div>
       </div>
       <div class="row">
         <div class="col-md-6 col-lg-3 add-url-component">
           <div class="input-group">
-            <span class="input-group-text">Quality</span>
+            <span class="input-group-text">画质</span>
             <select class="form-select" name="quality" [(ngModel)]="quality" (change)="qualityChanged()" [disabled]="addInProgress || downloads.loading">
               <option *ngFor="let q of qualities" [ngValue]="q.id">{{ q.text }}</option>
             </select>
@@ -60,7 +60,7 @@
         </div>
         <div class="col-md-6 col-lg-3 add-url-component">
           <div class="input-group">
-            <span class="input-group-text">Format</span>
+            <span class="input-group-text">格式</span>
             <select class="form-select" name="format" [(ngModel)]="format" (change)="formatChanged()" [disabled]="addInProgress || downloads.loading">
               <option *ngFor="let f of formats" [ngValue]="f.id">{{ f.text }}</option>
             </select>
@@ -68,7 +68,7 @@
         </div>
         <div class="col-md-6 col-lg-3 add-url-component">
           <div class="input-group">
-            <span class="input-group-text">Auto Start</span>
+            <span class="input-group-text">自动解析</span>
             <select class="form-select" name="autoStart" [(ngModel)]="autoStart" (change)="autoStartChanged()" [disabled]="addInProgress || downloads.loading">
               <option [ngValue]="true">Yes</option>
               <option [ngValue]="false">No</option>
@@ -79,7 +79,7 @@
           <div [attr.class]="showAdvanced() ? 'btn-group add-url-group' : 'add-url-group'" ngbDropdown #advancedDropdown="ngbDropdown" display="dynamic" placement="bottom-end">
             <button class="btn btn-primary add-url" type="submit" (click)="addDownload()" [disabled]="addInProgress || downloads.loading">
               <span class="spinner-border spinner-border-sm" role="status" id="add-spinner" *ngIf="addInProgress"></span>
-              {{ addInProgress ? "Adding..." : "Add" }}
+              {{ addInProgress ? "处理中..." : "添加" }}
             </button>
           </div>
         </div>
@@ -119,10 +119,10 @@
   <div *ngIf="downloads.loading" class="alert alert-info" role="alert">
     Connecting to server...
   </div>
-  <div class="metube-section-header">Downloading</div>
+  <div class="metube-section-header">解析处理</div>
   <div class="px-2 py-3 border-bottom">
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDelSelected (click)="delSelectedDownloads('queue')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Cancel selected</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDownloadSelected (click)="startSelectedDownloads('queue')"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Download selected</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDelSelected (click)="delSelectedDownloads('queue')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; 取消选中的视频</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDownloadSelected (click)="startSelectedDownloads('queue')"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; 下载选中的视频</button>
   </div>
   <div class="overflow-auto">
     <table class="table">
@@ -131,9 +131,9 @@
           <th scope="col" style="width: 1rem;">
             <app-master-checkbox #queueMasterCheckbox [id]="'queue'" [list]="downloads.queue" (changed)="queueSelectionChanged($event)"></app-master-checkbox>
           </th>
-          <th scope="col">Video</th>
-          <th scope="col" style="width: 8rem;">Speed</th>
-          <th scope="col" style="width: 7rem;">ETA</th>
+          <th scope="col">视频</th>
+          <th scope="col" style="width: 8rem;">速度</th>
+          <th scope="col" style="width: 7rem;">剩余时间</th>
           <th scope="col" style="width: 6rem;"></th>
         </tr>
       </thead>
@@ -162,13 +162,13 @@
     </table>
   </div>
 
-  <div class="metube-section-header">Completed</div>
+  <div class="metube-section-header">任务列表</div>
   <div class="px-2 py-3 border-bottom">
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Clear selected</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearCompleted (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle"></fa-icon>&nbsp; Clear completed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearFailed (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle"></fa-icon>&nbsp; Clear failed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneRetryFailed (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt"></fa-icon>&nbsp; Retry failed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Download Selected</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; 清除选中的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearCompleted (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle"></fa-icon>&nbsp; 清除完成的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearFailed (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle"></fa-icon>&nbsp; 清除失败任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneRetryFailed (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt"></fa-icon>&nbsp; 重试失败的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; 下载选中的任务</button>
   </div>
   <div class="overflow-auto">
     <table class="table">
@@ -177,8 +177,8 @@
           <th scope="col" style="width: 1rem;">
             <app-master-checkbox #doneMasterCheckbox [id]="'done'" [list]="downloads.done" (changed)="doneSelectionChanged($event)"></app-master-checkbox>
           </th>
-          <th scope="col">Video</th>
-          <th scope="col">File Size</th>
+          <th scope="col">视频</th>
+          <th scope="col">文件大小</th>
           <th scope="col" style="width: 8rem;"></th>
         </tr>
       </thead>
