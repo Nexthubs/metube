@@ -12,9 +12,9 @@ export interface Quality {
 export const Formats: Format[] = [
   {
     id: 'any',
-    text: 'Any',
+    text: '任意',
     qualities: [
-      { id: 'best', text: 'Best' },
+      { id: 'best', text: '最佳' },
       { id: '2160', text: '2160p' },
       { id: '1440', text: '1440p' },
       { id: '1080', text: '1080p' },
@@ -28,21 +28,21 @@ export const Formats: Format[] = [
     id: 'mp4',
     text: 'MP4',
     qualities: [
-      { id: 'best', text: 'Best' },
-      { id: 'best_ios', text: 'Best (iOS)' },
+      { id: 'best', text: '最佳' },
+      { id: 'best_ios', text: '最佳 (iOS)' },
       { id: '2160', text: '2160p' },
       { id: '1440', text: '1440p' },
       { id: '1080', text: '1080p' },
       { id: '720', text: '720p' },
       { id: '480', text: '480p' },
-      { id: 'worst', text: 'Worst' },
+      { id: 'worst', text: '最差' },
     ],
   },
   {
     id: 'm4a',
     text: 'M4A',
     qualities: [
-      { id: 'best', text: 'Best' },
+      { id: 'best', text: '最佳' },
       { id: '192', text: '192 kbps' },
       { id: '128', text: '128 kbps' },
     ],
@@ -51,7 +51,7 @@ export const Formats: Format[] = [
     id: 'mp3',
     text: 'MP3',
     qualities: [
-      { id: 'best', text: 'Best' },
+      { id: 'best', text: '最佳' },
       { id: '320', text: '320 kbps' },
       { id: '192', text: '192 kbps' },
       { id: '128', text: '128 kbps' },
@@ -60,21 +60,21 @@ export const Formats: Format[] = [
   {
     id: 'opus',
     text: 'OPUS',
-    qualities: [{ id: 'best', text: 'Best' }],
+    qualities: [{ id: 'best', text: '最佳' }],
   },
   {
     id: 'wav',
     text: 'WAV',
-    qualities: [{ id: 'best', text: 'Best' }],
+    qualities: [{ id: 'best', text: '最佳' }],
   },
   {
     id: 'flac',
     text: 'FLAC',
-    qualities: [{ id: 'best', text: 'Best' }],
+    qualities: [{ id: 'best', text: '最佳' }],
   },
   {
     id: 'thumbnail',
-    text: 'Thumbnail',
-    qualities: [{ id: 'best', text: 'Best' }],
+    text: '图片',
+    qualities: [{ id: 'best', text: '最佳' }],
   },
 ];
