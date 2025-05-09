@@ -20,8 +20,8 @@ export const Formats: Format[] = [
       { id: '1080', text: '1080p' },
       { id: '720', text: '720p' },
       { id: '480', text: '480p' },
-      { id: 'worst', text: 'Worst' },
-      { id: 'audio', text: 'Audio Only' },
+      { id: 'worst', text: '最差' },
+      { id: 'audio', text: '仅音频' },
     ],
   },
   {
