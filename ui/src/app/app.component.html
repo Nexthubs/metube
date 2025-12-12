@@ -1,31 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark">
   <div class="container-fluid">
-    <a class="navbar-brand d-flex align-items-center" href="#">
-      <img src="assets/icons/android-chrome-192x192.png" alt="MeTube Logo" height="32" class="me-2">
-      MeTube
-    </a>
-    <div class="download-metrics">
-      <div class="metric" *ngIf="activeDownloads > 0">
-        <fa-icon [icon]="faDownload" class="text-primary"></fa-icon>
-        <span>{{activeDownloads}} downloading</span>
-      </div>
-      <div class="metric" *ngIf="queuedDownloads > 0">
-        <fa-icon [icon]="faClock" class="text-warning"></fa-icon>
-        <span>{{queuedDownloads}} queued</span>
-      </div>
-      <div class="metric" *ngIf="completedDownloads > 0">
-        <fa-icon [icon]="faCheck" class="text-success"></fa-icon>
-        <span>{{completedDownloads}} completed</span>
-      </div>
-      <div class="metric" *ngIf="failedDownloads > 0">
-        <fa-icon [icon]="faTimesCircle" class="text-danger"></fa-icon>
-        <span>{{failedDownloads}} failed</span>
-      </div>
-      <div class="metric" *ngIf="(totalSpeed | speed) !== ''">
-        <fa-icon [icon]="faTachometerAlt" class="text-info"></fa-icon>
-        <span>{{totalSpeed | speed }}</span>
-      </div>
-    </div>
+    <a class="navbar-brand" href="#">友AI视频下载器</a>
     <!--
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsDefault" aria-controls="navbarsDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -69,26 +44,9 @@
 <main role="main" class="container container-xl">
   <form #f="ngForm">
     <div class="container add-url-box">
-      <!-- Main URL Input with Download Button -->
-      <div class="row mb-4">
-        <div class="col">
-          <div class="input-group input-group-lg shadow-sm">
-            <input type="text" 
-                   autocomplete="off" 
-                   spellcheck="false" 
-                   class="form-control form-control-lg" 
-                   placeholder="Enter video or playlist URL" 
-                   name="addUrl" 
-                   [(ngModel)]="addUrl" 
-                   [disabled]="addInProgress || downloads.loading">
-            <button class="btn btn-primary btn-lg px-4" 
-                    type="submit" 
-                    (click)="addDownload()" 
-                    [disabled]="addInProgress || downloads.loading">
-              <span class="spinner-border spinner-border-sm" role="status" id="add-spinner" *ngIf="addInProgress"></span>
-              {{ addInProgress ? "Adding..." : "Download" }}
-            </button>
-          </div>
+      <div class="row">
+        <div class="col add-url-component input-group">
+          <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="输入视频网页链接" name="addUrl" [(ngModel)]="addUrl" [disabled]="addInProgress || downloads.loading">
         </div>
       </div>
 
@@ -96,150 +54,35 @@
       <div class="row mb-3 g-3">
         <div class="col-md-4">
           <div class="input-group">
-            <span class="input-group-text">Quality</span>
-            <select class="form-select" 
-                    name="quality" 
-                    [(ngModel)]="quality" 
-                    (change)="qualityChanged()" 
-                    [disabled]="addInProgress || downloads.loading">
+            <span class="input-group-text">画质</span>
+            <select class="form-select" name="quality" [(ngModel)]="quality" (change)="qualityChanged()" [disabled]="addInProgress || downloads.loading">
               <option *ngFor="let q of qualities" [ngValue]="q.id">{{ q.text }}</option>
             </select>
           </div>
         </div>
         <div class="col-md-4">
           <div class="input-group">
-            <span class="input-group-text">Format</span>
-            <select class="form-select" 
-                    name="format" 
-                    [(ngModel)]="format" 
-                    (change)="formatChanged()" 
-                    [disabled]="addInProgress || downloads.loading">
+            <span class="input-group-text">格式</span>
+            <select class="form-select" name="format" [(ngModel)]="format" (change)="formatChanged()" [disabled]="addInProgress || downloads.loading">
               <option *ngFor="let f of formats" [ngValue]="f.id">{{ f.text }}</option>
             </select>
           </div>
         </div>
-        <div class="col-md-4">
-          <button type="button" 
-                  class="btn btn-outline-secondary w-100 h-100" 
-                  (click)="toggleAdvanced()">
-            Advanced Options
-          </button>
+        <div class="col-md-6 col-lg-3 add-url-component">
+          <div class="input-group">
+            <span class="input-group-text">自动解析</span>
+            <select class="form-select" name="autoStart" [(ngModel)]="autoStart" (change)="autoStartChanged()" [disabled]="addInProgress || downloads.loading">
+              <option [ngValue]="true">Yes</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
         </div>
-      </div>
-
-      <!-- Advanced Options Panel -->
-      <div class="row">
-        <div class="col-12">
-          <div class="collapse show" id="advancedOptions" [ngbCollapse]="!isAdvancedOpen">
-            <div class="card card-body">
-              <!-- Advanced Settings -->
-              <div class="row g-3 mb-2">
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Auto Start</span>
-                    <select class="form-select" 
-                            name="autoStart" 
-                            [(ngModel)]="autoStart" 
-                            (change)="autoStartChanged()" 
-                            [disabled]="addInProgress || downloads.loading"
-                            ngbTooltip="Automatically start downloads when added">
-                      <option [ngValue]="true">Yes</option>
-                      <option [ngValue]="false">No</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Download Folder</span>
-                    <ng-select [items]="customDirs$ | async" 
-                              placeholder="Default" 
-                              [addTag]="allowCustomDir.bind(this)" 
-                              addTagText="Create directory" 
-                              bindLabel="folder" 
-                              [(ngModel)]="folder" 
-                              [disabled]="addInProgress || downloads.loading"
-                              [virtualScroll]="true"
-                              [clearable]="true"
-                              [loading]="downloads.loading"
-                              [searchable]="true"
-                              [closeOnSelect]="true"
-                              ngbTooltip="Choose where to save downloads. Type to create a new folder.">
-                    </ng-select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Custom Name Prefix</span>
-                    <input type="text" 
-                           class="form-control" 
-                           placeholder="Default" 
-                           name="customNamePrefix" 
-                           [(ngModel)]="customNamePrefix" 
-                           [disabled]="addInProgress || downloads.loading"
-                           ngbTooltip="Add a prefix to downloaded filenames">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group">
-                    <span class="input-group-text">Items Limit</span>
-                    <input type="number" 
-                           min="0" 
-                           class="form-control" 
-                           placeholder="Default" 
-                           name="playlistItemLimit" 
-                           (keydown)="isNumber($event)" 
-                           [(ngModel)]="playlistItemLimit" 
-                           [disabled]="addInProgress || downloads.loading"
-                           ngbTooltip="Maximum number of items to download from a playlist (0 = no limit)">
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" 
-                           type="checkbox" 
-                           role="switch" 
-                           name="playlistStrictMode" 
-                           [(ngModel)]="playlistStrictMode" 
-                           [disabled]="addInProgress || downloads.loading"
-                           ngbTooltip="Only download playlists when URL explicitly points to a playlist">
-                    <label class="form-check-label">Strict Playlist Mode</label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Advanced Actions -->
-              <div class="row">
-                <div class="col-12">
-                  <hr class="my-3">
-                  <div class="row g-2">
-                    <div class="col-md-4">
-                      <button type="button" 
-                              class="btn btn-secondary w-100" 
-                              (click)="openBatchImportModal()">
-                        <fa-icon [icon]="faFileImport" class="me-2"></fa-icon>
-                        Import URLs
-                      </button>
-                    </div>
-                    <div class="col-md-4">
-                      <button type="button" 
-                              class="btn btn-secondary w-100" 
-                              (click)="exportBatchUrls('all')">
-                        <fa-icon [icon]="faFileExport" class="me-2"></fa-icon>
-                        Export URLs
-                      </button>
-                    </div>
-                    <div class="col-md-4">
-                      <button type="button" 
-                              class="btn btn-secondary w-100" 
-                              (click)="copyBatchUrls('all')">
-                        <fa-icon [icon]="faCopy" class="me-2"></fa-icon>
-                        Copy URLs
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div class="col-md-6 col-lg-3 add-url-component d-flex align-items-center">
+          <div [attr.class]="showAdvanced() ? 'btn-group add-url-group' : 'add-url-group'" ngbDropdown #advancedDropdown="ngbDropdown" display="dynamic" placement="bottom-end">
+            <button class="btn btn-primary add-url" type="submit" (click)="addDownload()" [disabled]="addInProgress || downloads.loading">
+              <span class="spinner-border spinner-border-sm" role="status" id="add-spinner" *ngIf="addInProgress"></span>
+              {{ addInProgress ? "处理中..." : "添加" }}
+            </button>
           </div>
         </div>
       </div>
@@ -278,10 +121,10 @@
   <div *ngIf="downloads.loading" class="alert alert-info" role="alert">
     Connecting to server...
   </div>
-  <div class="metube-section-header">Downloading</div>
+  <div class="metube-section-header">解析处理</div>
   <div class="px-2 py-3 border-bottom">
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDelSelected (click)="delSelectedDownloads('queue')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Cancel selected</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDownloadSelected (click)="startSelectedDownloads('queue')"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Download selected</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDelSelected (click)="delSelectedDownloads('queue')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; 取消选中的视频</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDownloadSelected (click)="startSelectedDownloads('queue')"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; 下载选中的视频</button>
   </div>
   <div class="overflow-auto">
     <table class="table">
@@ -290,9 +133,9 @@
           <th scope="col" style="width: 1rem;">
             <app-master-checkbox #queueMasterCheckbox [id]="'queue'" [list]="downloads.queue" (changed)="queueSelectionChanged($event)"></app-master-checkbox>
           </th>
-          <th scope="col">Video</th>
-          <th scope="col" style="width: 8rem;">Speed</th>
-          <th scope="col" style="width: 7rem;">ETA</th>
+          <th scope="col">视频</th>
+          <th scope="col" style="width: 8rem;">速度</th>
+          <th scope="col" style="width: 7rem;">剩余时间</th>
           <th scope="col" style="width: 6rem;"></th>
         </tr>
       </thead>
@@ -321,13 +164,13 @@
     </table>
   </div>
 
-  <div class="metube-section-header">Completed</div>
+  <div class="metube-section-header">任务列表</div>
   <div class="px-2 py-3 border-bottom">
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Clear selected</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearCompleted (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle"></fa-icon>&nbsp; Clear completed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearFailed (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle"></fa-icon>&nbsp; Clear failed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneRetryFailed (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt"></fa-icon>&nbsp; Retry failed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Download Selected</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; 清除选中的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearCompleted (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle"></fa-icon>&nbsp; 清除完成的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearFailed (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle"></fa-icon>&nbsp; 清除失败任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneRetryFailed (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt"></fa-icon>&nbsp; 重试失败的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; 下载选中的任务</button>
   </div>
   <div class="overflow-auto">
     <table class="table">
@@ -336,8 +179,8 @@
           <th scope="col" style="width: 1rem;">
             <app-master-checkbox #doneMasterCheckbox [id]="'done'" [list]="downloads.done" (changed)="doneSelectionChanged($event)"></app-master-checkbox>
           </th>
-          <th scope="col">Video</th>
-          <th scope="col">File Size</th>
+          <th scope="col">视频</th>
+          <th scope="col">文件大小</th>
           <th scope="col" style="width: 8rem;"></th>
         </tr>
       </thead>
