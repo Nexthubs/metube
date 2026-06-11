@@ -39,7 +39,9 @@ export class DownloadsService {
   queueChanged = new Subject();
   doneChanged = new Subject();
   customDirsChanged = new Subject();
+  ytdlOptionsChanged = new Subject();
   configurationChanged = new Subject();
+  updated = new Subject();
 
   configuration = {};
   customDirs = {};
@@ -66,6 +68,7 @@ export class DownloadsService {
       data.checked = dl.checked;
       data.deleting = dl.deleting;
       this.queue.set(data.url, data);
+      this.updated.next(null);
     });
     socket.fromEvent('completed').subscribe((strdata: string) => {
       let data: Download = JSON.parse(strdata);
@@ -95,6 +98,10 @@ export class DownloadsService {
       console.debug("got custom_dirs:", data);
       this.customDirs = data;
       this.customDirsChanged.next(data);
+    });
+    socket.fromEvent('ytdl_options_changed').subscribe((strdata: string) => {
+      let data = JSON.parse(strdata);
+      this.ytdlOptionsChanged.next(data);
     });
   }
 
