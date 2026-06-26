@@ -10,10 +10,10 @@ export interface AudioFormatOption extends Option {
 }
 
 export const DOWNLOAD_TYPES: Option[] = [
-  { id: "video", text: "Video" },
-  { id: "audio", text: "Audio" },
-  { id: "captions", text: "Captions" },
-  { id: "thumbnail", text: "Thumbnail" },
+  { id: "video", text: "视频" },
+  { id: "audio", text: "音频" },
+  { id: "captions", text: "字幕" },
+  { id: "thumbnail", text: "封面图" },
 ];
 
 export const VIDEO_CODECS: Option[] = [
