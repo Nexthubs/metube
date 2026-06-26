@@ -4,38 +4,6 @@
       <img src="assets/icons/android-chrome-192x192.png" alt="MeTube Logo" height="32" class="me-2">
       媒资下载中心
     </a>
-    <div class="download-metrics">
-      @if (activeDownloads > 0) {
-        <div class="metric">
-          <fa-icon [icon]="faDownload" class="text-primary" />
-          <span>{{activeDownloads}} downloading</span>
-        </div>
-      }
-      @if (queuedDownloads > 0) {
-        <div class="metric">
-          <fa-icon [icon]="faClock" class="text-warning" />
-          <span>{{queuedDownloads}} queued</span>
-        </div>
-      }
-      @if (completedDownloads > 0) {
-        <div class="metric">
-          <fa-icon [icon]="faCheck" class="text-success" />
-          <span>{{completedDownloads}} completed</span>
-        </div>
-      }
-      @if (failedDownloads > 0) {
-        <div class="metric">
-          <fa-icon [icon]="faTimesCircle" class="text-danger" />
-          <span>{{failedDownloads}} failed</span>
-        </div>
-      }
-      @if ((totalSpeed | speed) !== '') {
-        <div class="metric">
-          <fa-icon [icon]="faTachometerAlt" class="text-info" />
-          <span>{{totalSpeed | speed }}</span>
-        </div>
-      }
-    </div>
     <!--
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsDefault" aria-controls="navbarsDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -141,7 +109,7 @@
               autocomplete="off"
               spellcheck="false"
               class="form-control form-control-lg"
-              placeholder="Enter video, channel, or playlist URL"
+              placeholder="输入视频网页链接"
               [(ngModel)]="addUrl"
               [ngModelOptions]="{standalone: true}"
               [disabled]="addInProgress || subscribeInProgress || downloads.loading">
@@ -392,13 +360,13 @@
 
   @if (downloads.loading) {
     <div class="alert alert-info" role="alert">
-      Connecting to server...
+      服务器连接中...
     </div>
   }
-  <div class="metube-section-header">Downloading</div>
+  <div class="metube-section-header">解析处理</div>
   <div class="px-2 py-3 border-bottom">
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDelSelected (click)="delSelectedDownloads('queue')"><fa-icon [icon]="faTrashAlt" />&nbsp; Cancel selected</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDownloadSelected (click)="startSelectedDownloads('queue')"><fa-icon [icon]="faDownload" />&nbsp; Download selected</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDelSelected (click)="delSelectedDownloads('queue')"><fa-icon [icon]="faTrashAlt" />&nbsp; 取消选择</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDownloadSelected (click)="startSelectedDownloads('queue')"><fa-icon [icon]="faDownload" />&nbsp; 下载选中</button>
   </div>
   <div class="overflow-auto">
     <table class="table">
@@ -407,9 +375,9 @@
           <th scope="col" style="width: 1rem;">
             <app-select-all-checkbox #queueMasterCheckboxRef [id]="'queue'" [list]="downloads.queue" (changed)="queueSelectionChanged($event)" />
           </th>
-          <th scope="col">Video</th>
-          <th scope="col" style="width: 8rem;">Speed</th>
-          <th scope="col" style="width: 7rem;">ETA</th>
+          <th scope="col">视频</th>
+          <th scope="col" style="width: 8rem;">速度</th>
+          <th scope="col" style="width: 7rem;">剩余时间</th>
           <th scope="col" style="width: 6rem;"></th>
         </tr>
       </thead>
@@ -458,14 +426,14 @@
     </table>
   </div>
 
-  <div class="metube-section-header">Completed</div>
+  <div class="metube-section-header">任务列表</div>
   <div class="px-2 py-3 border-bottom">
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" (click)="toggleSortOrder()" ngbTooltip="{{ sortAscending ? 'Oldest first' : 'Newest first' }}"><fa-icon [icon]="sortAscending ? faSortAmountUp : faSortAmountDown" />&nbsp; {{ sortAscending ? 'Oldest first' : 'Newest first' }}</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt" />&nbsp; Clear selected</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" [disabled]="!hasCompletedDone" (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle" />&nbsp; Clear completed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" [disabled]="!hasFailedDone" (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle" />&nbsp; Clear failed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" [disabled]="!hasFailedDone" (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt" />&nbsp; Retry failed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload" />&nbsp; Download Selected</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" (click)="toggleSortOrder()" ngbTooltip="{{ sortAscending ? 'Oldest first' : 'Newest first' }}"><fa-icon [icon]="sortAscending ? faSortAmountUp : faSortAmountDown" />&nbsp; {{ sortAscending ? '最老' : '最新' }}</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt" />&nbsp; 清除选中的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" [disabled]="!hasCompletedDone" (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle" />&nbsp; 清除完成的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" [disabled]="!hasFailedDone" (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle" />&nbsp; 清除失败任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" [disabled]="!hasFailedDone" (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt" />&nbsp; 重试失败的任务</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload" />&nbsp; 下载选中的任务</button>
   </div>
   <div class="overflow-auto">
     <table class="table">
@@ -474,12 +442,12 @@
           <th scope="col" style="width: 1rem;">
             <app-select-all-checkbox #doneMasterCheckboxRef [id]="'done'" [list]="downloads.done" (changed)="doneSelectionChanged($event)" />
           </th>
-          <th scope="col">Video</th>
-          <th scope="col">Type</th>
-          <th scope="col">Quality</th>
-          <th scope="col">Codec / Format</th>
-          <th scope="col">File Size</th>
-          <th scope="col">Downloaded</th>
+          <th scope="col">视频</th>
+          <th scope="col">类型</th>
+          <th scope="col">质量</th>
+          <th scope="col">编码 / 格式</th>
+          <th scope="col">文件大小</th>
+          <th scope="col">已下载</th>
           <th scope="col" style="width: 8rem;"></th>
         </tr>
       </thead>
